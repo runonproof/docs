@@ -1,0 +1,6 @@
+{
+  "scenario": "idempotency",
+  "first": { "idempotency_key": "relai-demo-stable-001", "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111", "execution_id": "gbexec_demoactive001", "charged": false },
+  "identical_retry": { "idempotency_key": "relai-demo-stable-001", "request_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111", "execution_id": "gbexec_demoactive001", "replayed": true, "additional_charge_usdc": "0.00" },
+  "changed_payload": { "idempotency_key": "relai-demo-stable-001", "http_status": 409, "reason_code": "UK_IDEMPOTENCY_CONFLICT", "charged": false }
+}

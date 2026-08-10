@@ -1,0 +1,6 @@
+{
+  "scenario": "conditioned-capability",
+  "input": { "intent": "bank_account_ownership", "company_number": "ZZ000001" },
+  "selection": { "status": "STOP", "capability": null, "reason_code": "CAPABILITY_CONDITIONED_NON_PURCHASABLE" },
+  "economic_activity": { "charged": false, "quote_created": false, "settlement_created": false }
+}

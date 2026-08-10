@@ -1,0 +1,12 @@
+{
+  "scenario": "source-unavailable",
+  "input": { "intent": "company_check", "company_number": "ZZ000001", "idempotency_key": "relai-demo-outage-001" },
+  "request": { "method": "POST", "path": "/v1/gb/solutions/company-check", "price_usdc": "0.04", "payment_executed": false },
+  "response": {
+    "decision": "RETRY", "authorization": "HOLD", "machine_action": "RETRY_LATER", "reason_codes": ["REQUIRED_SOURCE_UNAVAILABLE"],
+    "coverage": { "country": "GB", "supported": false, "limitations": ["Companies House unavailable"] },
+    "source_health": { "UK_COMPANIES_HOUSE": "UNAVAILABLE" }, "evidence": [],
+    "valid_as_of": "2030-01-01T12:00:00.000Z", "valid_until": "2030-01-01T12:00:00.000Z", "limitations": ["No decision was produced"],
+    "economic_activity": { "charged": false, "quote_created": false, "settlement_created": false }
+  }
+}
