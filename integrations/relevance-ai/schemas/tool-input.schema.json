@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runonproof.com/schemas/relevance-ai-tool-input.v1.json",
+  "$defs": {
+    "companyNumber": { "type": "string", "pattern": "^(?:[A-Z]{2}|[0-9]{2})?[0-9]{6}$|^[0-9]{8}$" },
+    "idempotencyKey": { "type": "string", "pattern": "^[A-Za-z0-9._:-]{8,120}$" },
+    "selectCapability": {
+      "type": "object", "additionalProperties": false, "required": ["intent"],
+      "properties": {
+        "intent": { "enum": ["company_check", "legal_status", "resolve_company", "supplier_approval", "restricted_party_screen", "bank_account_ownership", "tax_registration", "business_licence"] },
+        "country": { "const": "GB", "default": "GB" },
+        "has_execution_id": { "type": "boolean", "default": false }
+      }
+    },
+    "companyCheck": {
+      "type": "object", "additionalProperties": false, "required": ["company_number", "idempotency_key"],
+      "properties": { "company_number": { "$ref": "#/$defs/companyNumber" }, "idempotency_key": { "$ref": "#/$defs/idempotencyKey" } }
+    },
+    "supplierApproval": {
+      "type": "object", "additionalProperties": false, "required": ["company_number", "policy_id", "idempotency_key"],
+      "properties": {
+        "company_number": { "$ref": "#/$defs/companyNumber" },
+        "policy_id": { "const": "GB_NEW_SUPPLIER_V1" },
+        "sanctions_subject_names": { "type": "array", "maxItems": 20, "items": { "type": "string", "minLength": 1, "maxLength": 300 } },
+        "idempotency_key": { "$ref": "#/$defs/idempotencyKey" }
+      }
+    },
+    "restrictedParty": {
+      "type": "object", "additionalProperties": false, "required": ["country", "jurisdiction", "subject", "idempotency_key"],
+      "properties": {
+        "country": { "const": "GB" },
+        "jurisdiction": { "const": "UNITED_KINGDOM" },
+        "subject": {
+          "type": "object", "additionalProperties": false, "required": ["name"],
+          "properties": {
+            "name": { "type": "string", "minLength": 1, "maxLength": 300 },
+            "aliases": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 300 } },
+            "entity_type": { "enum": ["PERSON", "ENTITY", "VESSEL", "AIRCRAFT", "OTHER"] }
+          }
+        },
+        "idempotency_key": { "$ref": "#/$defs/idempotencyKey" }
+      }
+    },
+    "replay": {
+      "type": "object", "additionalProperties": false, "required": ["execution_id"],
+      "properties": { "execution_id": { "type": "string", "pattern": "^gbexec_[A-Za-z0-9]+$" } }
+    }
+  }
+}

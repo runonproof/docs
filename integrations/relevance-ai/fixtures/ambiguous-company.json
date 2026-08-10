@@ -1,0 +1,12 @@
+{
+  "scenario": "ambiguous-company",
+  "input": { "intent": "resolve_company", "company_name": "SYNTHETIC ALPHA", "idempotency_key": "relai-demo-ambiguous-001" },
+  "request": { "method": "POST", "path": "/v1/gb/solutions/company-check", "price_usdc": "0.04", "payment_executed": false },
+  "response": {
+    "decision": "REVIEW", "authorization": "HOLD", "machine_action": "PRESENT_CANDIDATES", "reason_codes": ["AMBIGUOUS_IDENTITY"],
+    "coverage": { "country": "GB", "supported": true, "limitations": ["Two synthetic candidates matched"] },
+    "source_health": { "UK_COMPANIES_HOUSE": "HEALTHY" }, "evidence": [{ "evidence_id": "ev_demo_search", "source_id": "SYNTHETIC_ONLY", "freshness": "CURRENT_AT_RETRIEVAL" }],
+    "valid_as_of": "2030-01-01T12:00:00.000Z", "valid_until": "2030-01-01T13:00:00.000Z", "limitations": ["A human must select the legal entity"],
+    "economic_activity": { "charged": false, "quote_created": false, "settlement_created": false }
+  }
+}

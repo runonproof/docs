@@ -1,0 +1,6 @@
+{
+  "scenario": "payment-required",
+  "input": { "intent": "company_check", "company_number": "01234567", "idempotency_key": "relai-demo-quote-001" },
+  "response": { "http_status": 402, "status": "PAYMENT_REQUIRED", "product_id": "gb.solution.company_check.v1", "price_usdc": "0.04", "protocol": "x402", "payment_signature": "fixture-must-be-redacted" },
+  "expected": { "recommendation": "REVIEW", "automatic_continuation": false, "payment_required": true, "economic_activity": { "charged": false, "settlement_created": false } }
+}

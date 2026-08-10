@@ -1,0 +1,104 @@
+{
+  "schema_version": "1.0.0",
+  "name": "RunOnProof integration for Relevance AI",
+  "state": "PUBLIC_DOCUMENTATION_EXPORT_NOT_MARKETPLACE_SUBMITTED",
+  "official_relevance_mechanism": "API Tool step",
+  "base_url": "https://api.runonproof.com",
+  "openapi_reference": "https://api.runonproof.com/v1/openapi.json",
+  "runtime_catalog": "https://api.runonproof.com/v1/gb/coverage",
+  "runtime_source_health": "https://api.runonproof.com/v1/gb/source-health",
+  "secrets": [],
+  "payment_policy": {
+    "automatic_payment": false,
+    "payment_headers": "FORBIDDEN_IN_RELEVANCE_TOOL",
+    "on_http_402": "RETURN_REVIEW_AND_REQUIRE_EXPLICIT_EXTERNAL_PAYMENT_AUTHORIZATION"
+  },
+  "tool_defaults": {
+    "response_format": "json",
+    "throw_error_on_4xx_5xx": false,
+    "timeout_ms": 15000,
+    "max_response_bytes": 65536,
+    "redirects": "disabled",
+    "agent_retry_count": 0,
+    "retry_rule": "Only replay GET may retry automatically; never retry a paid POST unless the exact idempotency key and payload are unchanged."
+  },
+  "tools": [
+    {
+      "name": "runonproof_select_uk_capability",
+      "kind": "javascript",
+      "implementation": "runtime.mjs#selectCapability",
+      "input_schema": "schemas/tool-input.schema.json#/$defs/selectCapability",
+      "description": "Select the smallest supported UK verification and stop conditioned or unsupported requests before any paid call."
+    },
+    {
+      "name": "runonproof_get_uk_coverage",
+      "kind": "api",
+      "method": "GET",
+      "path": "/v1/gb/coverage",
+      "economic": false,
+      "description": "Read current UK coverage, sources, availability and purchase eligibility before selecting a verification."
+    },
+    {
+      "name": "runonproof_get_uk_source_health",
+      "kind": "api",
+      "method": "GET",
+      "path": "/v1/gb/source-health",
+      "economic": false,
+      "description": "Read sanitized Companies House and UK Sanctions List health; unhealthy sources force REVIEW."
+    },
+    {
+      "name": "runonproof_verify_uk_company",
+      "kind": "api",
+      "method": "POST",
+      "path": "/v1/gb/solutions/company-check",
+      "product_id": "gb.solution.company_check.v1",
+      "price_usdc": "0.04",
+      "economic": true,
+      "input_schema": "schemas/tool-input.schema.json#/$defs/companyCheck",
+      "output_schema": "schemas/decision-output.schema.json",
+      "description": "Verify a Companies House company identity and legal state. A 402 is a quote boundary, not permission to pay."
+    },
+    {
+      "name": "runonproof_approve_uk_supplier",
+      "kind": "api",
+      "method": "POST",
+      "path": "/v1/gb/solutions/supplier-approval",
+      "product_id": "gb.solution.supplier_approval.v1",
+      "price_usdc": "0.20",
+      "economic": true,
+      "input_schema": "schemas/tool-input.schema.json#/$defs/supplierApproval",
+      "output_schema": "schemas/decision-output.schema.json",
+      "description": "Verify a UK supplier using Companies House and UK sanctions evidence. Never widen a no-match beyond declared coverage."
+    },
+    {
+      "name": "runonproof_screen_uk_restricted_party",
+      "kind": "api",
+      "method": "POST",
+      "path": "/v1/restricted-parties/screen",
+      "product_id": "restricted_business_party.screen.v1",
+      "price_usdc": null,
+      "economic": false,
+      "input_schema": "schemas/tool-input.schema.json#/$defs/restrictedParty",
+      "output_schema": "schemas/decision-output.schema.json",
+      "description": "Screen a named party against the UK Sanctions List. No match is list- and time-scoped only."
+    },
+    {
+      "name": "runonproof_replay_uk_execution",
+      "kind": "api",
+      "method": "GET",
+      "path": "/v1/gb/executions/{{execution_id}}",
+      "price_usdc": "0.00",
+      "economic": false,
+      "input_schema": "schemas/tool-input.schema.json#/$defs/replay",
+      "output_schema": "schemas/decision-output.schema.json",
+      "description": "Replay a committed UK execution with zero live-source calls and zero additional charge."
+    },
+    {
+      "name": "runonproof_normalize_decision",
+      "kind": "javascript",
+      "implementation": "runtime.mjs#normalizeDecision",
+      "output_schema": "schemas/decision-output.schema.json",
+      "description": "Map the canonical envelope to PROCEED, REVIEW or STOP without hiding evidence, freshness, limitations or economic state."
+    }
+  ]
+}

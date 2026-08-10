@@ -1,0 +1,12 @@
+{
+  "scenario": "replay",
+  "input": { "execution_id": "gbexec_demoactive001" },
+  "request": { "method": "GET", "path": "/v1/gb/executions/gbexec_demoactive001" },
+  "response": {
+    "decision": "APPROVE", "authorization": "ALLOW", "machine_action": "USE_COMPANY", "reason_codes": ["COMPANY_IDENTITY_RESOLVED", "COMPANY_STATUS_ACTIVE"],
+    "coverage": { "country": "GB", "supported": true, "limitations": ["Synthetic fixture"] }, "source_health": { "UK_COMPANIES_HOUSE": "HEALTHY" },
+    "evidence": [{ "evidence_id": "ev_demo_active", "source_id": "SYNTHETIC_ONLY", "freshness": "CURRENT_AT_RETRIEVAL" }],
+    "valid_as_of": "2030-01-01T12:00:00.000Z", "valid_until": "2030-01-01T13:00:00.000Z", "limitations": ["Synthetic contract fixture"],
+    "execution_id": "gbexec_demoactive001", "replayed": true, "economic_activity": { "charged": false, "quote_created": false, "settlement_created": false }
+  }
+}

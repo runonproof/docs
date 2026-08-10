@@ -1,0 +1,15 @@
+{
+  "scenario": "company-active",
+  "input": { "intent": "company_check", "company_number": "ZZ000001", "idempotency_key": "relai-demo-company-001" },
+  "request": { "method": "POST", "path": "/v1/gb/solutions/company-check", "price_usdc": "0.04", "payment_executed": false },
+  "response": {
+    "schema_version": "1.0.0", "product_or_solution": "gb.solution.company_check.v1", "request_id": "gb_demo_active", "execution_id": "gbexec_demoactive001",
+    "decision": "APPROVE", "authorization": "ALLOW", "machine_action": "USE_COMPANY",
+    "reason_codes": ["COMPANY_IDENTITY_RESOLVED", "COMPANY_STATUS_ACTIVE"],
+    "coverage": { "country": "GB", "population": "COMPANIES_HOUSE_REGISTERED_ENTITIES", "supported": true, "limitations": ["Synthetic fixture; not a live company"] },
+    "source_health": { "UK_COMPANIES_HOUSE": "HEALTHY" },
+    "evidence": [{ "evidence_id": "ev_demo_active", "source_id": "SYNTHETIC_ONLY", "source_url": "https://synthetic.invalid", "freshness": "CURRENT_AT_RETRIEVAL", "claims": ["synthetic active company"] }],
+    "valid_as_of": "2030-01-01T12:00:00.000Z", "valid_until": "2030-01-01T13:00:00.000Z", "limitations": ["Synthetic contract fixture; no live-source claim"],
+    "economic_activity": { "charged": false, "quote_created": false, "settlement_created": false }, "result": { "company_number": "ZZ000001", "company_name": "SYNTHETIC ALPHA LTD" }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runonproof.com/schemas/relevance-ai-decision-output.v1.json",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["recommendation", "automatic_continuation", "reason_codes"],
+  "properties": {
+    "recommendation": { "enum": ["PROCEED", "REVIEW", "STOP"] },
+    "automatic_continuation": { "type": "boolean" },
+    "payment_required": { "type": "boolean" },
+    "decision": { "enum": ["APPROVE", "CONDITIONAL", "REVIEW", "BLOCK", "RETRY", "NO_DECISION"] },
+    "authorization": { "enum": ["ALLOW", "ALLOW_WITH_CONDITIONS", "HOLD", "DENY"] },
+    "machine_action": { "type": "string" },
+    "reason_codes": { "type": "array", "items": { "type": "string" } },
+    "coverage": { "type": "object" },
+    "source_health": { "type": "object" },
+    "evidence": { "type": "array" },
+    "limitations": { "type": "array", "items": { "type": "string" } },
+    "valid_as_of": { "type": "string", "format": "date-time" },
+    "valid_until": { "type": "string", "format": "date-time" },
+    "execution_id": { "type": ["string", "null"] },
+    "replayed": { "type": "boolean" },
+    "economic_activity": { "type": "object" }
+  }
+}
