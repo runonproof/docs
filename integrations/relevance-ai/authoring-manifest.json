@@ -22,6 +22,64 @@
     "agent_retry_count": 0,
     "retry_rule": "Only replay GET may retry automatically; never retry a paid POST unless the exact idempotency key and payload are unchanged."
   },
+  "private_portfolio": {
+    "last_inspected": "2026-08-10",
+    "state": "PRIVATE_RELEVANCE_AI_PROJECT_ONLY",
+    "agent": "RunOnProof Demo Agent",
+    "tool_count": 5,
+    "requires_approval": true,
+    "publicly_available": false,
+    "automatic_payment": false,
+    "marketplace_submitted": false,
+    "production_calls_during_configuration": 0,
+    "purchases_during_configuration": 0,
+    "tools": [
+      {
+        "name": "RunOnProof UK Company Verification",
+        "product_id": "gb.solution.company_check.v1",
+        "method": "POST",
+        "path": "/v1/gb/solutions/company-check",
+        "inputs": ["company_number:string", "idempotency_key:string"],
+        "payload_shape": ["company_number", "idempotency_key"]
+      },
+      {
+        "name": "RunOnProof UK Supplier Approval",
+        "product_id": "gb.solution.supplier_approval.v1",
+        "method": "POST",
+        "path": "/v1/gb/solutions/supplier-approval",
+        "inputs": ["company_number:string", "idempotency_key:string"],
+        "payload_shape": ["company_number", "policy_id=GB_NEW_SUPPLIER_V1", "idempotency_key"],
+        "primary_commercial_case": true
+      },
+      {
+        "name": "RunOnProof UK Invoice & Payee Verification",
+        "product_id": "gb.solution.invoice_payee_verification.v1",
+        "method": "POST",
+        "path": "/v1/gb/solutions/invoice-payee-verification",
+        "inputs": ["idempotency_key:string", "request:object"],
+        "payload_shape": ["invoice", "payee", "idempotency_key"]
+      },
+      {
+        "name": "RunOnProof UK Payment Authorization",
+        "product_id": "gb.solution.payment_authorization.v1",
+        "method": "POST",
+        "path": "/v1/gb/solutions/payment-authorization",
+        "inputs": ["idempotency_key:string", "request:object"],
+        "payload_shape": ["company_number", "supplier", "invoice", "payee", "amount", "currency", "idempotency_key"],
+        "decision_only": true,
+        "payment_execution": false
+      },
+      {
+        "name": "RunOnProof UK Vendor Change & Continuous Authorization",
+        "product_id": "gb.solution.vendor_change_continuous_authorization.v1",
+        "method": "POST",
+        "path": "/v1/gb/solutions/vendor-change-continuous-authorization",
+        "inputs": ["idempotency_key:string", "request:object"],
+        "payload_shape": ["change", "idempotency_key"],
+        "continuous_authorization_is_permanent": false
+      }
+    ]
+  },
   "tools": [
     {
       "name": "runonproof_select_uk_capability",

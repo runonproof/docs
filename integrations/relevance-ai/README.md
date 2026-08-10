@@ -21,3 +21,5 @@ npm run test:relevance-ai
 This public export is versioned by `schema_version` in `authoring-manifest.json`. Executable service source and internal test evidence are not included. Runtime catalog, coverage, health, and a newer controlled release take precedence over this snapshot.
 
 Internal Tool publication is not public sharing, Marketplace publication, partnership, or automatic-payment authorization.
+
+The sanitized `private_portfolio` section in `authoring-manifest.json` records the five private solution-level Tools without workspace IDs or secrets. It is descriptive evidence for documentation and must not be treated as a public Tool export or permission to execute.

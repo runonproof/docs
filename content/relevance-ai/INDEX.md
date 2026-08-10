@@ -44,6 +44,22 @@ For communication and future distribution:
 
 This repository proves the seven synthetic contract scenarios, including the `gb.solution.company_check.v1` quote boundary at `0.04 USDC`, with zero production calls and zero payment attempts. It does not publish private workspace evidence or claim a Relevance AI Marketplace listing, endorsement, certification, or partnership.
 
+## The five private solutions
+
+The RunOnProof private Relevance AI project contains five solution-level Tools. They are internal building blocks for a human-approved workflow, not public Marketplace products.
+
+| Solution | What it answers | Public contract |
+|---|---|---|
+| **UK Company Verification** | Is this the declared Companies House company, and what is its current legal state? | `POST /v1/gb/solutions/company-check` |
+| **UK Supplier Approval** | May this supplier enter the onboarding workflow, using scoped Companies House and UK Sanctions List evidence? | `POST /v1/gb/solutions/supplier-approval` |
+| **UK Invoice & Payee Verification** | Are the caller-provided invoice fields consistent with the company and independently supported payee evidence? | `POST /v1/gb/solutions/invoice-payee-verification` |
+| **UK Payment Authorization** | May one bounded business payment proceed under the available evidence and policy? This is a decision only; it never executes, signs, transmits, or settles payment. | `POST /v1/gb/solutions/payment-authorization` |
+| **UK Vendor Change & Continuous Authorization** | May a scoped vendor payee-detail change proceed, and may authorization continue under a fresh challenge and prior authorization? Continuation is bounded, never permanent. | `POST /v1/gb/solutions/vendor-change-continuous-authorization` |
+
+Every Tool is private, internally Live, connected to the private demo agent, and configured with `Requires approval`. `Publicly available` is off, automatic payment is off, and HTTP 402 always means `REVIEW` pending separate external authorization. No Tool has been submitted to the Marketplace or run as part of this documentation release.
+
+`UK Supplier Approval` remains the primary commercial demonstration. The other solutions show the width of the private portfolio without claiming that the whole United Kingdom programme is complete.
+
 ## Sources of truth and precedence
 
 When two pages disagree, use this precedence:

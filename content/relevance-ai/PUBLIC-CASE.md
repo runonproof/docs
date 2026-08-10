@@ -2,7 +2,9 @@
 
 An AI agent may need to add a supplier, trust a company, or prepare a payment. Before it acts, it needs to know which legal company it is dealing with and what reliable evidence is available.
 
-RunOnProof gives the agent a narrow company decision with the proof and limits attached. In the Relevance AI demonstration, the agent uses a RunOnProof Tool to prepare a UK Company Check.
+RunOnProof gives the agent a narrow company decision with the proof and limits attached. The private Relevance AI demonstration has five solution-level Tools: Company Verification, Supplier Approval, Invoice & Payee Verification, Payment Authorization, and Vendor Change & Continuous Authorization.
+
+Supplier Approval is the primary commercial demonstration. The other four Tools show how the same evidence-first boundaries can support company identity, invoice and payee checks, a bounded payment decision, and a controlled vendor-detail change. Payment Authorization only returns a decision; it never executes, signs, transmits, or settles payment.
 
 ## What the demonstration shows
 
@@ -27,7 +29,7 @@ These are action-specific answers, not a permanent trust score.
 
 The public case uses synthetic fixtures for safe, repeatable tests. Synthetic company numbers are not live Companies House results, and this repository exposes no private Relevance AI workspace state.
 
-The integration has not been published in the Relevance AI Marketplace and does not imply a partnership, endorsement, or approval by Relevance AI.
+All five Tools remain private and require human approval. Automatic payment is off. The integration has not been published in the Relevance AI Marketplace and does not imply a partnership, endorsement, or approval by Relevance AI.
 
 ## Reproduce the case
 
