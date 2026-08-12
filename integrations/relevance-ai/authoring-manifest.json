@@ -5,9 +5,9 @@
   "state": "MARKETPLACE_REVIEW_PENDING_UNPUBLISHED",
   "production": {
     "release_sha": "4a545d4fa39fd55400862c5efd096630293ced9c",
-    "base_url": "https://cdo-production.up.railway.app",
+    "base_url": "https://api.runonproof.com",
     "mcp_registry_identity": "io.github.runonproof/cdo@3.0.0",
-    "mcp_url": "https://cdo-production.up.railway.app/v1/agent/mcp",
+    "mcp_url": "https://api.runonproof.com/v1/agent/mcp",
     "mcp_transport": "streamable-http"
   },
   "marketplace": {

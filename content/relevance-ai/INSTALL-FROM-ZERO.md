@@ -17,7 +17,7 @@ You do **not** need a wallet, payer key, payment signature, or RunOnProof secret
 
 - **Synthetic test** uses repository fixtures. It does not contact a real source and costs `0.00 USDC`.
 - **Staging** is a RunOnProof engineering environment. Use it only when a documented staging URL and authorization exist for the test.
-- **Production** is `https://cdo-production.up.railway.app`. A paid POST can return HTTP 402 and may lead to a charge only through a separately authorized x402 payment client. This integration must stop before payment.
+- **Production** is `https://api.runonproof.com`. A paid POST can return HTTP 402 and may lead to a charge only through a separately authorized x402 payment client. This integration must stop before payment.
 
 If you are unsure which environment you are using, stop and inspect the URL before pressing Run.
 
@@ -38,7 +38,7 @@ This path cannot be used while the listing is `pending / Unpublished`.
 1. Open an Agent and go to its Tools section.
 2. Choose **Add MCP → Connect my own**.
 3. Label the connection `runonproof-production`.
-4. Enter `https://cdo-production.up.railway.app/v1/agent/mcp`.
+4. Enter `https://api.runonproof.com/v1/agent/mcp`.
 5. Confirm the server reports version `3.0.0` and lists the expected Tools.
 6. Add only the five intended capabilities to the Agent and require approval for economic execution.
 

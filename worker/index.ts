@@ -27,7 +27,6 @@ interface ExecutionContext {
 }
 
 const PUBLIC_DOCS_ORIGIN = "https://docs.runonproof.com";
-const LEGACY_API_ORIGIN = "https://cdo-production.up.railway.app";
 
 function sitemapResponse(): Response {
   const paths = new Set([
@@ -46,6 +45,12 @@ function sitemapResponse(): Response {
 
 function robotsResponse(): Response {
   return new Response(`User-agent: *\nAllow: /\nSitemap: ${PUBLIC_DOCS_ORIGIN}/sitemap.xml\n`, {
+    headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=300" },
+  });
+}
+
+function llmsResponse(): Response {
+  return new Response(`# RunOnProof\n\n> Evidence-backed, source-scoped business decisions for agents and enterprise systems.\n\n- Documentation: ${PUBLIC_DOCS_ORIGIN}/docs\n- UK V1: ${PUBLIC_DOCS_ORIGIN}/docs/uk/v1\n- Integrations: ${PUBLIC_DOCS_ORIGIN}/docs/integrations\n- MCP: ${PUBLIC_DOCS_ORIGIN}/docs/integrations/mcp\n- Support: ${PUBLIC_DOCS_ORIGIN}/docs/support\n- Privacy: ${PUBLIC_DOCS_ORIGIN}/docs/privacy\n- Terms: ${PUBLIC_DOCS_ORIGIN}/docs/terms\n- OpenAPI: ${CERTIFIED_API_ORIGIN}/v1/openapi.json\n- Catalog: ${CERTIFIED_API_ORIGIN}/v1/catalog\n- Agent Card: ${CERTIFIED_API_ORIGIN}/.well-known/agent-card.json\n- Remote MCP: ${CERTIFIED_API_ORIGIN}/v1/agent/mcp\n\nThe five UK commercial solutions are Company Check, Supplier Approval, Invoice & Payee Verification, Payment Authorization, and Vendor Change & Continuous Authorization. Paid Tools return a bound x402 endpoint and never sign, pay, or settle automatically. HTTP 402 requires review.\n`, {
     headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=300" },
   });
 }
@@ -87,7 +92,7 @@ async function certifiedUkResponse(request: Request, pathname: string): Promise<
   if (request.method === "HEAD") return new Response(null, { status: upstream.status, headers: responseHeaders });
   const contentType = upstream.headers.get("content-type") ?? "";
   if (contentType.includes("text/html")) {
-    const html = (await upstream.text()).replaceAll(LEGACY_API_ORIGIN, CERTIFIED_API_ORIGIN);
+    const html = await upstream.text();
     return new Response(html, { status: upstream.status, headers: responseHeaders });
   }
   return new Response(upstream.body, { status: upstream.status, headers: responseHeaders });
@@ -105,6 +110,7 @@ const worker = {
 
     if (url.pathname === "/sitemap.xml") return sitemapResponse();
     if (url.pathname === "/robots.txt") return robotsResponse();
+    if (url.pathname === "/llms.txt") return llmsResponse();
     if (isCertifiedUkPublicPath(url.pathname)) return certifiedUkResponse(request, url.pathname);
 
     if (url.pathname === "/_vinext/image") {

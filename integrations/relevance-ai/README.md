@@ -26,7 +26,7 @@ The private commercial-outreach preparation is under `commercial-outreach/`. It 
 1. Log in to [Relevance AI](https://app.relevanceai.com/) and open the intended development project.
 2. Create a Tool from scratch named `RunOnProof UK Company Verification`.
 3. Add the inputs from `schemas/tool-input.schema.json#/$defs/companyCheck`.
-4. Add an **API** step: `POST https://cdo-production.up.railway.app/v1/gb/solutions/company-check`.
+4. Add an **API** step: `POST https://api.runonproof.com/v1/gb/solutions/company-check`.
 5. Set `Accept: application/json`, `Content-Type: application/json`, and `Idempotency-Key` from the exact `idempotency_key` input. Bind the same key into the JSON body.
 6. Choose JSON response format and leave “Throw error on 4xx/5xx” off so a 402/409/422/503 can be routed safely.
 7. Add a JavaScript step with the logic in `runtime.mjs#normalizeDecision`, expose only the normalized schema, and attach the Tool to a development agent using `SYSTEM-PROMPT.md`.
@@ -37,7 +37,7 @@ The native editor step is required because current official documentation does n
 
 ## Environment and secrets
 
-The production base URL is fixed to `https://cdo-production.up.railway.app`. The read-only coverage, health and public metadata calls require no secret. If a deployment later requires a RunOnProof API token, save it under Relevance AI **Integrations & API Keys → Custom API Keys** and reference it as a Relevance secret; never paste it into the manifest, prompt, log or fixture.
+The production base URL is fixed to `https://api.runonproof.com`. The read-only coverage, health and public metadata calls require no secret. If a deployment later requires a RunOnProof API token, save it under Relevance AI **Integrations & API Keys → Custom API Keys** and reference it as a Relevance secret; never paste it into the manifest, prompt, log or fixture.
 
 This bundle intentionally has no payer key, wallet, x402 proof, cookie or reusable payment credential. A 402 produces `REVIEW` and a price display. Relevance AI does not document a native user-wallet x402 signer. A real purchase therefore requires the non-custodial, human-controlled handoff in `public-production/PAYMENT-HANDOFF.md`; only its short-lived output may populate the optional `payment_signature` input for the exact approved request.
 

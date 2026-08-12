@@ -2,7 +2,7 @@ const COMPANY_NUMBER = /^(?:[A-Z]{2}|[0-9]{2})?[0-9]{6}$|^[0-9]{8}$/;
 const IDEMPOTENCY_KEY = /^[A-Za-z0-9._:-]{8,120}$/;
 const EXECUTION_ID = /^gbexec_[A-Za-z0-9]+$/;
 
-export const RUNONPROOF_ORIGIN = "https://cdo-production.up.railway.app";
+export const RUNONPROOF_ORIGIN = "https://api.runonproof.com";
 export const MAX_PAYLOAD_BYTES = 65_536;
 export const STOP_DECISIONS = new Set(["REVIEW", "BLOCK", "RETRY", "NO_DECISION"]);
 

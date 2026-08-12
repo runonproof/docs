@@ -3,6 +3,7 @@ import test from "node:test";
 
 const developmentPreviewMeta =
   /<meta(?=[^>]*\bname=["']codex-preview["'])(?=[^>]*\bcontent=["']development["'])[^>]*>/i;
+const retiredIdentity = new RegExp(`${["Company", "Decision", "Oracle"].join(" ")}|${["CD", "Oracle"].join("")}|cdo-production[.]up[.]railway[.]app`);
 
 const workerUrl = new URL("../dist/server/index.js", import.meta.url);
 workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
@@ -70,6 +71,28 @@ test("preserves Brazil, United States, catalog and global documentation routes",
   }
 });
 
+test("publishes every channel and policy route as RunOnProof", async () => {
+  for (const route of [
+    "/docs/integrations/mcp",
+    "/docs/integrations/n8n",
+    "/docs/integrations/make",
+    "/docs/integrations/zapier",
+    "/docs/support",
+    "/docs/privacy",
+    "/docs/terms",
+  ]) {
+    const response = await fetchPage(route);
+    assert.equal(response.status, 200, route);
+    const html = await response.text();
+    assert.match(html, /RunOnProof/);
+    assert.doesNotMatch(html, retiredIdentity);
+  }
+  const llms = await fetchPage("/llms.txt");
+  assert.equal(llms.status, 200);
+  assert.match(llms.headers.get("content-type") ?? "", /^text\/plain\b/i);
+  assert.match(await llms.text(), /Remote MCP: https:\/\/api\.runonproof\.com\/v1\/agent\/mcp/);
+});
+
 test("publishes the UK V1 sitemap without removing existing documentation", async () => {
   const response = await fetchPage("/sitemap.xml");
   assert.equal(response.status, 200);
@@ -95,7 +118,7 @@ test("proxies only the certified UK allowlist and strips caller authority", asyn
   globalThis.fetch = async (input, init) => {
     seen.push({ input: String(input), init });
     return new Response(
-      '<!doctype html><link rel="canonical" href="https://docs.runonproof.com/docs/uk/v1"><a href="https://cdo-production.up.railway.app/v1/gb/coverage">coverage</a>',
+      '<!doctype html><link rel="canonical" href="https://docs.runonproof.com/docs/uk/v1"><a href="https://api.runonproof.com/v1/gb/coverage">coverage</a>',
       { status: 200, headers: { "content-type": "text/html; charset=utf-8" } },
     );
   };
@@ -117,7 +140,7 @@ test("proxies only the certified UK allowlist and strips caller authority", asyn
     assert.equal(response.headers.get("cache-control"), "no-store, max-age=0");
     const html = await response.text();
     assert.match(html, /https:\/\/api\.runonproof\.com\/v1\/gb\/coverage/);
-    assert.doesNotMatch(html, /cdo-production\.up\.railway\.app/);
+    assert.doesNotMatch(html, /cdo-production[.]up[.]railway[.]app/);
     assert.equal(seen.length, 1);
     assert.equal(seen[0].input, "https://api.runonproof.com/docs/uk/v1");
     const forwarded = new Headers(seen[0].init.headers);

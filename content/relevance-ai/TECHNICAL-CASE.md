@@ -8,14 +8,14 @@ An AI agent can call an API, but that does not mean it knows whether the source 
 
 RunOnProof is exposed through a Relevance AI API Tool step. The first Tool verifies a UK Companies House company number through the Company Check solution. Repository-owned selection and normalization rules turn the canonical response into `PROCEED`, `REVIEW`, or `STOP` while retaining evidence, coverage, freshness, limitations, and economic activity.
 
-The Marketplace submissions use API Tool steps because they expose a narrow product with explicit inputs and prices. Relevance AI also supports the certified RunOnProof remote Streamable HTTP MCP at `https://cdo-production.up.railway.app/v1/agent/mcp`. Direct MCP connection is a supported secondary path, not proof of Marketplace approval and not an x402 wallet.
+The Marketplace submissions use API Tool steps because they expose a narrow product with explicit inputs and prices. Relevance AI also supports the certified RunOnProof remote Streamable HTTP MCP at `https://api.runonproof.com/v1/agent/mcp`. Direct MCP connection is a supported secondary path, not proof of Marketplace approval and not an x402 wallet.
 
 ## Request contract
 
 The primary business inputs are the exact `company_number` and an `idempotency_key` for the exact request. The Tool performs:
 
 ```text
-POST https://cdo-production.up.railway.app/v1/gb/solutions/company-check
+POST https://api.runonproof.com/v1/gb/solutions/company-check
 ```
 
 It sends JSON headers, binds the idempotency key, accepts JSON, and leaves 4xx/5xx available to the normalization step. Automatic retry is disabled for the paid POST.

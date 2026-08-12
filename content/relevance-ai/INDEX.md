@@ -48,7 +48,7 @@ The RunOnProof account has verified Relevance Builder access. Six Tool listings 
 
 No public Marketplace URL exists yet, so external discovery, cloning, purchase and use cannot be claimed. The internal agent remains a workspace-only demo and is not a substitute for Marketplace publication. Current verdict: `RELEVANCE_PUBLICATION_REVIEW_PENDING`.
 
-Production truth is release `4a545d4fa39fd55400862c5efd096630293ced9c`, MCP Registry identity `io.github.runonproof/cdo@3.0.0`, and remote MCP `https://cdo-production.up.railway.app/v1/agent/mcp`. Relevance AI supports connecting that remote MCP, but the MCP Registry does not install it automatically.
+Production truth is release `4a545d4fa39fd55400862c5efd096630293ced9c`, MCP Registry identity `io.github.runonproof/cdo@3.0.0`, and remote MCP `https://api.runonproof.com/v1/agent/mcp`. Relevance AI supports connecting that remote MCP, but the MCP Registry does not install it automatically.
 
 ## Sources of truth and precedence
 
@@ -66,7 +66,7 @@ Never infer availability from the presence of a route or an old screenshot. A ca
 
 - **Repository implemented**: code, schemas, fixtures, prompt, and documentation exist in Git.
 - **Published internally**: the Tool or agent is usable inside the RunOnProof Relevance AI project.
-- **Production call**: the Tool sends a request to `cdo-production.up.railway.app`.
+- **Production call**: the Tool sends a request to `api.runonproof.com`.
 - **Marketplace submitted**: listing material has entered Relevance review; it is still unavailable to external users.
 - **Marketplace published**: the approved listing has a public URL and can be independently found and cloned. This state has not been reached.
 - **Payment certified**: one human-approved `0.04 USDC` production purchase, delivery, ledger reconciliation and no-charge replay were externally proven. This state has not been reached.
