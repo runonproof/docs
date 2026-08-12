@@ -53,3 +53,79 @@ test("publishes every Relevance AI subpage in the sidebar", async () => {
     assert.doesNotMatch(html, /app\.relevanceai\.com\/(agents|notebook)/);
   }
 });
+
+test("preserves Brazil, United States, catalog and global documentation routes", async () => {
+  for (const route of [
+    "/docs",
+    "/docs/catalog",
+    "/docs/coverage",
+    "/docs/countries/br",
+    "/docs/countries/us",
+    "/docs/capabilities/company-check",
+    "/docs/capabilities/company-passport",
+  ]) {
+    const response = await fetchPage(route);
+    assert.equal(response.status, 200, route);
+    assert.match(await response.text(), /RunOnProof/);
+  }
+});
+
+test("publishes the UK V1 sitemap without removing existing documentation", async () => {
+  const response = await fetchPage("/sitemap.xml");
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get("content-type") ?? "", /^application\/xml\b/i);
+  const xml = await response.text();
+  for (const path of [
+    "/docs",
+    "/docs/countries/br",
+    "/docs/countries/us",
+    "/docs/integrations/relevance-ai",
+    "/docs/uk/v1",
+    "/docs/uk/products/resolve-legal-entity",
+    "/docs/uk/solutions/payment-authorisation",
+    "/docs/uk/passport/company-capability-passport",
+  ]) {
+    assert.match(xml, new RegExp(`https://docs\\.runonproof\\.com${path}`));
+  }
+});
+
+test("proxies only the certified UK allowlist and strips caller authority", async () => {
+  const originalFetch = globalThis.fetch;
+  const seen = [];
+  globalThis.fetch = async (input, init) => {
+    seen.push({ input: String(input), init });
+    return new Response(
+      '<!doctype html><link rel="canonical" href="https://docs.runonproof.com/docs/uk/v1"><a href="https://cdo-production.up.railway.app/v1/gb/coverage">coverage</a>',
+      { status: 200, headers: { "content-type": "text/html; charset=utf-8" } },
+    );
+  };
+  try {
+    const response = await worker.fetch(
+      new Request("http://localhost/docs/uk/v1", {
+        headers: {
+          authorization: "Bearer must-not-forward",
+          cookie: "must-not-forward=1",
+          "payment-signature": "must-not-forward",
+          "x-payment": "must-not-forward",
+        },
+      }),
+      { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
+      { waitUntil() {}, passThroughOnException() {} },
+    );
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get("x-runonproof-docs-source-sha"), "f640afe35f040653815b3e7e5673e31ed4ab036a");
+    assert.equal(response.headers.get("cache-control"), "no-store, max-age=0");
+    const html = await response.text();
+    assert.match(html, /https:\/\/api\.runonproof\.com\/v1\/gb\/coverage/);
+    assert.doesNotMatch(html, /cdo-production\.up\.railway\.app/);
+    assert.equal(seen.length, 1);
+    assert.equal(seen[0].input, "https://api.runonproof.com/docs/uk/v1");
+    const forwarded = new Headers(seen[0].init.headers);
+    assert.equal(forwarded.get("authorization"), null);
+    assert.equal(forwarded.get("cookie"), null);
+    assert.equal(forwarded.get("payment-signature"), null);
+    assert.equal(forwarded.get("x-payment"), null);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
