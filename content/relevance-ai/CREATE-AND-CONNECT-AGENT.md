@@ -24,7 +24,7 @@ Do not shorten the safety rules merely to make the prompt look cleaner. In parti
 7. Do not connect a wallet or payment Tool.
 8. Save and publish the agent inside the project. Public Agent sharing is a separate action from Tool Marketplace approval.
 
-Alternatively choose **Add MCP → Connect my own** and enter `https://cdo-production.up.railway.app/v1/agent/mcp`. The MCP connection exposes the certified production server, but it does not install Marketplace listings or add a wallet.
+Alternatively choose **Add MCP → Connect my own** and enter `https://api.runonproof.com/v1/agent/mcp`. The MCP connection exposes the certified production server, but it does not install Marketplace listings or add a wallet.
 
 ## Verify the connection
 
