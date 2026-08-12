@@ -8,7 +8,7 @@ If the Tool behaves unsafely:
 
 1. stop new agent runs;
 2. disconnect the Tool from the agent or select a known-safe prior Tool version;
-3. keep sharing private;
+3. unpublish or disable public sharing and Marketplace availability where the platform permits;
 4. disable any retry automation;
 5. preserve execution history and economic records;
 6. revoke exposed credentials in their owning systems.
@@ -26,7 +26,7 @@ Do not delete evidence before reconciliation.
 
 ## Remove the integration
 
-For a complete private-workspace removal:
+For a complete removal:
 
 1. disconnect the Tool from every agent;
 2. archive or disable the agent;
@@ -34,7 +34,8 @@ For a complete private-workspace removal:
 4. revoke integration-specific secrets, if any;
 5. confirm scheduled or triggered runs no longer reference it;
 6. preserve required audit records according to policy;
-7. remove public links or claims that imply availability.
+7. withdraw Marketplace listings or mark them unavailable;
+8. remove public links or claims that imply availability.
 
 Deletion is the final step, not the first. Prefer reversible archive/disable controls until investigation and retention obligations are complete.
 

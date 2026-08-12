@@ -34,6 +34,7 @@ test("publishes every Relevance AI subpage in the sidebar", async () => {
     "/docs/integrations/relevance-ai/use",
     "/docs/integrations/relevance-ai/decisions",
     "/docs/integrations/relevance-ai/pricing-and-approval",
+    "/docs/integrations/relevance-ai/first-purchase",
     "/docs/integrations/relevance-ai/security",
     "/docs/integrations/relevance-ai/fixtures",
     "/docs/integrations/relevance-ai/troubleshooting",

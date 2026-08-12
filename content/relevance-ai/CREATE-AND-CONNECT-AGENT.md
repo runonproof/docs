@@ -1,4 +1,4 @@
-# Create and connect the demo agent
+# Create and connect a RunOnProof agent
 
 The agent explains what the user wants, chooses whether the Tool is appropriate, asks for missing information, and interprets the normalized response. It must not invent evidence or silently approve payment.
 
@@ -7,22 +7,24 @@ The agent explains what the user wants, chooses whether the Tool is appropriate,
 1. Open **Agents** in the Relevance AI project.
 2. Choose **Create Agent** or **New Agent**.
 3. Select a blank or start-from-scratch option.
-4. Name it `RunOnProof Demo Agent`.
+4. Name it `RunOnProof` or a task-specific name such as `RunOnProof Company Check`.
 5. Copy the complete contents of `../SYSTEM-PROMPT.md` into the agent instructions.
 6. Save the draft.
 
 Do not shorten the safety rules merely to make the prompt look cleaner. In particular, preserve coverage checks, price disclosure, approval, idempotency, source-health handling, and prohibited claims.
 
-## Connect the Tool
+## Connect the five-capability product
 
 1. Open the agent editor.
 2. Find **Tools**, **Connected resources**, or the equivalent resource panel.
 3. Choose **Add Tool**.
-4. Select `RunOnProof UK Company Verification`.
+4. After Marketplace approval, select only the RunOnProof capabilities the agent needs. Start with `RunOnProof Company Check`; do not attach Company Capability Passport to the public agent.
 5. Allow the agent to fill business inputs only where the interface says **Let agent decide**.
 6. Do not let the agent decide whether approval is required. The execution policy itself must remain **Requires approval**.
 7. Do not connect a wallet or payment Tool.
-8. Save and publish the agent internally.
+8. Save and publish the agent inside the project. Public Agent sharing is a separate action from Tool Marketplace approval.
+
+Alternatively choose **Add MCP → Connect my own** and enter `https://cdo-production.up.railway.app/v1/agent/mcp`. The MCP connection exposes the certified production server, but it does not install Marketplace listings or add a wallet.
 
 ## Verify the connection
 
@@ -33,7 +35,7 @@ In the agent editor, confirm:
 - execution requires approval;
 - automatic retry is disabled for the paid POST;
 - no secret or payment credential appears in visible instructions;
-- sharing is private or project-only.
+- no claim of Marketplace availability is shown until an approved public URL exists.
 
 ## First conversation
 

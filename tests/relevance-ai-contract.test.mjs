@@ -9,26 +9,27 @@ const fixture = async (name) => JSON.parse(await readFile(new URL(`fixtures/${na
 test("public manifest is sanitized and forbids automatic payment", async () => {
   const raw = await readFile(new URL("authoring-manifest.json", root), "utf8");
   const manifest = JSON.parse(raw);
-  assert.equal(manifest.state, "PUBLIC_DOCUMENTATION_EXPORT_NOT_MARKETPLACE_SUBMITTED");
+  assert.equal(manifest.state, "MARKETPLACE_REVIEW_PENDING_UNPUBLISHED");
   assert.equal(manifest.payment_policy.automatic_payment, false);
+  assert.equal(manifest.payment_policy.wallet_or_payer_secret_in_relevance, false);
+  assert.equal(manifest.marketplace.approval_status, "pending");
+  assert.equal(manifest.marketplace.published_status, "Unpublished");
+  assert.equal(manifest.marketplace.target_submission_count, 5);
+  assert.equal(manifest.marketplace.submission_count, 6);
   assert.deepEqual(manifest.secrets, []);
   assert.doesNotMatch(raw, /app\.relevanceai\.com\/(agents|notebook)/);
+  assert.doesNotMatch(raw, /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i);
 });
 
-test("private five-solution portfolio stays descriptive, private, and approval-gated", async () => {
+test("five-capability target stays descriptive and approval-gated", async () => {
   const raw = await readFile(new URL("authoring-manifest.json", root), "utf8");
-  const portfolio = JSON.parse(raw).private_portfolio;
-  assert.equal(portfolio.state, "PRIVATE_RELEVANCE_AI_PROJECT_ONLY");
-  assert.equal(portfolio.tool_count, 5);
-  assert.equal(portfolio.tools.length, 5);
-  assert.equal(new Set(portfolio.tools.map((tool) => tool.name)).size, 5);
-  assert.equal(portfolio.requires_approval, true);
-  assert.equal(portfolio.publicly_available, false);
-  assert.equal(portfolio.automatic_payment, false);
-  assert.equal(portfolio.marketplace_submitted, false);
-  assert.equal(portfolio.production_calls_during_configuration, 0);
-  assert.equal(portfolio.purchases_during_configuration, 0);
-  assert.equal(portfolio.tools.find((tool) => tool.product_id === "gb.solution.payment_authorization.v1").payment_execution, false);
+  const manifest = JSON.parse(raw);
+  const capabilities = manifest.capabilities;
+  assert.equal(capabilities.length, 5);
+  assert.equal(new Set(capabilities.map((tool) => tool.name)).size, 5);
+  assert.equal(manifest.tool_defaults.relevance_ai_policy, "Approval Required");
+  assert.equal(manifest.marketplace.external_installation_certified, false);
+  assert.equal(capabilities.find((tool) => tool.product_id_gb === "gb.solution.payment_authorization.v1").payment_execution, false);
   assert.doesNotMatch(raw, /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i);
 });
 

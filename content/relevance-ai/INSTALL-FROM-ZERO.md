@@ -1,15 +1,15 @@
 # Install from zero
 
-This guide is for a person who has never built a Relevance AI Tool. The goal is to create a safe development copy of the RunOnProof Tool and connect it to a test agent without paying RunOnProof or calling a paid production verification.
+This guide is for a person who has never used RunOnProof in Relevance AI. It covers the future Marketplace installation path, a direct MCP fallback, and a safe first test that stops before payment.
 
 ## Before you start
 
 You need:
 
 - access to a Relevance AI project you are allowed to modify;
-- access to this repository;
-- the files `authoring-manifest.json`, `schemas/tool-input.schema.json`, `runtime.mjs`, and `SYSTEM-PROMPT.md`;
-- about 20–30 minutes for a first installation.
+- a Relevance AI project where you can add Tools or MCP connections;
+- the production MCP URL shown below if the Marketplace listing is not yet approved;
+- about 10 minutes for a first safe connection.
 
 You do **not** need a wallet, payer key, payment signature, or RunOnProof secret for the safe synthetic setup. Do not create or paste payment credentials into Relevance AI.
 
@@ -17,11 +17,34 @@ You do **not** need a wallet, payer key, payment signature, or RunOnProof secret
 
 - **Synthetic test** uses repository fixtures. It does not contact a real source and costs `0.00 USDC`.
 - **Staging** is a RunOnProof engineering environment. Use it only when a documented staging URL and authorization exist for the test.
-- **Production** is `https://api.runonproof.com`. A paid POST can return HTTP 402 and may lead to a charge only through a separately authorized x402 payment client. This integration must stop before payment.
+- **Production** is `https://cdo-production.up.railway.app`. A paid POST can return HTTP 402 and may lead to a charge only through a separately authorized x402 payment client. This integration must stop before payment.
 
 If you are unsure which environment you are using, stop and inspect the URL before pressing Run.
 
-## Installation sequence
+## Path A — Marketplace, after approval
+
+1. Open Relevance AI and select **Marketplace**.
+2. Search for `RunOnProof` and open the listing published by RunOnProof.
+3. Confirm the listing describes the five capabilities, says the listing is free to clone, and separately lists each RunOnProof USDC execution price.
+4. Clone or add the Tool to the intended project.
+5. Attach only the capabilities you need to a new Agent.
+6. Set every economic Tool to **Approval Required**.
+7. Run Company Check without a payment signature to obtain the `0.04 USDC` quote. Stop at `REVIEW`.
+
+This path cannot be used while the listing is `pending / Unpublished`.
+
+## Path B — direct remote MCP
+
+1. Open an Agent and go to its Tools section.
+2. Choose **Add MCP → Connect my own**.
+3. Label the connection `runonproof-production`.
+4. Enter `https://cdo-production.up.railway.app/v1/agent/mcp`.
+5. Confirm the server reports version `3.0.0` and lists the expected Tools.
+6. Add only the five intended capabilities to the Agent and require approval for economic execution.
+
+This direct connection is an official Relevance MCP Client feature, but it is not a Marketplace listing and does not provide an x402 wallet.
+
+## Path C — manual development copy
 
 1. Open [Relevance AI](https://app.relevanceai.com/) and sign in.
 2. Open a development project. Do not begin in a shared production project.
@@ -53,10 +76,10 @@ The installation is successful only when all of these are true:
 - Do not paste an API key into a prompt, fixture, URL, screenshot, or chat.
 - Do not enable automatic retry for a paid POST.
 - Do not turn HTTP 402 into a successful result.
-- Do not publish the Tool or agent publicly as part of installation.
+- Do not describe a pending submission or direct MCP connection as an approved Marketplace listing.
 - Do not claim a Relevance AI partnership.
 - Do not use a real company as the first test when a synthetic fixture can prove the contract.
 
-## Existing installations
+## Existing RunOnProof workspace
 
-Before creating a Tool, check your own project for an existing version. Avoid duplicates; recreate only for isolated training, disaster recovery, or a deliberately versioned replacement. This public repository does not expose RunOnProof's private workspace identifiers or links.
+The RunOnProof workspace contains eleven Tools: five historical UK aliases, five global target capabilities and Company Capability Passport. Six global Tool listings are under Marketplace review. Avoid creating duplicates. See [Observed workspace evidence](WORKSPACE-EVIDENCE.md) for historical state and `../public-production/README.md` for the current publication state.

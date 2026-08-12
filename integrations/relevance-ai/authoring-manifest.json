@@ -1,162 +1,50 @@
 {
-  "schema_version": "1.0.0",
-  "name": "RunOnProof integration for Relevance AI",
-  "state": "PUBLIC_DOCUMENTATION_EXPORT_NOT_MARKETPLACE_SUBMITTED",
-  "official_relevance_mechanism": "API Tool step",
-  "base_url": "https://api.runonproof.com",
-  "openapi_reference": "https://api.runonproof.com/v1/openapi.json",
-  "runtime_catalog": "https://api.runonproof.com/v1/gb/coverage",
-  "runtime_source_health": "https://api.runonproof.com/v1/gb/source-health",
+  "schema_version": "2.0.0",
+  "name": "RunOnProof",
+  "description": "Verifiable business authorization infrastructure for AI agents and enterprise systems.",
+  "state": "MARKETPLACE_REVIEW_PENDING_UNPUBLISHED",
+  "production": {
+    "release_sha": "4a545d4fa39fd55400862c5efd096630293ced9c",
+    "base_url": "https://cdo-production.up.railway.app",
+    "mcp_registry_identity": "io.github.runonproof/cdo@3.0.0",
+    "mcp_url": "https://cdo-production.up.railway.app/v1/agent/mcp",
+    "mcp_transport": "streamable-http"
+  },
+  "marketplace": {
+    "surface": "Relevance AI Marketplace",
+    "review_required": true,
+    "observed_at": "2026-08-11",
+    "submission_count": 6,
+    "target_submission_count": 5,
+    "approval_status": "pending",
+    "published_status": "Unpublished",
+    "public_url": null,
+    "external_installation_certified": false,
+    "listing_price": "Free",
+    "excluded_submission": "RunOnProof Company Capability Passport"
+  },
   "secrets": [],
   "payment_policy": {
     "automatic_payment": false,
-    "payment_headers": "FORBIDDEN_IN_RELEVANCE_TOOL",
-    "on_http_402": "RETURN_REVIEW_AND_REQUIRE_EXPLICIT_EXTERNAL_PAYMENT_AUTHORIZATION"
+    "wallet_or_payer_secret_in_relevance": false,
+    "relevance_native_x402_signer_documented": false,
+    "on_http_402": "RETURN_REVIEW_WITH_PRICE_AND_REQUIRE_EXPLICIT_HUMAN_PAYMENT_APPROVAL",
+    "required_sequence": ["request", "quote", "REVIEW", "human_approval", "external_signature", "payment", "execution", "result"],
+    "replay_rule": "Reuse the exact payload and idempotency key; committed replay must not create another charge."
   },
   "tool_defaults": {
     "response_format": "json",
     "throw_error_on_4xx_5xx": false,
     "timeout_ms": 15000,
     "max_response_bytes": 65536,
-    "redirects": "disabled",
     "agent_retry_count": 0,
-    "retry_rule": "Only replay GET may retry automatically; never retry a paid POST unless the exact idempotency key and payload are unchanged."
+    "relevance_ai_policy": "Approval Required"
   },
-  "private_portfolio": {
-    "last_inspected": "2026-08-10",
-    "state": "PRIVATE_RELEVANCE_AI_PROJECT_ONLY",
-    "agent": "RunOnProof Demo Agent",
-    "tool_count": 5,
-    "requires_approval": true,
-    "publicly_available": false,
-    "automatic_payment": false,
-    "marketplace_submitted": false,
-    "production_calls_during_configuration": 0,
-    "purchases_during_configuration": 0,
-    "tools": [
-      {
-        "name": "RunOnProof UK Company Verification",
-        "product_id": "gb.solution.company_check.v1",
-        "method": "POST",
-        "path": "/v1/gb/solutions/company-check",
-        "inputs": ["company_number:string", "idempotency_key:string"],
-        "payload_shape": ["company_number", "idempotency_key"]
-      },
-      {
-        "name": "RunOnProof UK Supplier Approval",
-        "product_id": "gb.solution.supplier_approval.v1",
-        "method": "POST",
-        "path": "/v1/gb/solutions/supplier-approval",
-        "inputs": ["company_number:string", "idempotency_key:string"],
-        "payload_shape": ["company_number", "policy_id=GB_NEW_SUPPLIER_V1", "idempotency_key"],
-        "primary_commercial_case": true
-      },
-      {
-        "name": "RunOnProof UK Invoice & Payee Verification",
-        "product_id": "gb.solution.invoice_payee_verification.v1",
-        "method": "POST",
-        "path": "/v1/gb/solutions/invoice-payee-verification",
-        "inputs": ["idempotency_key:string", "request:object"],
-        "payload_shape": ["invoice", "payee", "idempotency_key"]
-      },
-      {
-        "name": "RunOnProof UK Payment Authorization",
-        "product_id": "gb.solution.payment_authorization.v1",
-        "method": "POST",
-        "path": "/v1/gb/solutions/payment-authorization",
-        "inputs": ["idempotency_key:string", "request:object"],
-        "payload_shape": ["company_number", "supplier", "invoice", "payee", "amount", "currency", "idempotency_key"],
-        "decision_only": true,
-        "payment_execution": false
-      },
-      {
-        "name": "RunOnProof UK Vendor Change & Continuous Authorization",
-        "product_id": "gb.solution.vendor_change_continuous_authorization.v1",
-        "method": "POST",
-        "path": "/v1/gb/solutions/vendor-change-continuous-authorization",
-        "inputs": ["idempotency_key:string", "request:object"],
-        "payload_shape": ["change", "idempotency_key"],
-        "continuous_authorization_is_permanent": false
-      }
-    ]
-  },
-  "tools": [
-    {
-      "name": "runonproof_select_uk_capability",
-      "kind": "javascript",
-      "implementation": "runtime.mjs#selectCapability",
-      "input_schema": "schemas/tool-input.schema.json#/$defs/selectCapability",
-      "description": "Select the smallest supported UK verification and stop conditioned or unsupported requests before any paid call."
-    },
-    {
-      "name": "runonproof_get_uk_coverage",
-      "kind": "api",
-      "method": "GET",
-      "path": "/v1/gb/coverage",
-      "economic": false,
-      "description": "Read current UK coverage, sources, availability and purchase eligibility before selecting a verification."
-    },
-    {
-      "name": "runonproof_get_uk_source_health",
-      "kind": "api",
-      "method": "GET",
-      "path": "/v1/gb/source-health",
-      "economic": false,
-      "description": "Read sanitized Companies House and UK Sanctions List health; unhealthy sources force REVIEW."
-    },
-    {
-      "name": "runonproof_verify_uk_company",
-      "kind": "api",
-      "method": "POST",
-      "path": "/v1/gb/solutions/company-check",
-      "product_id": "gb.solution.company_check.v1",
-      "price_usdc": "0.04",
-      "economic": true,
-      "input_schema": "schemas/tool-input.schema.json#/$defs/companyCheck",
-      "output_schema": "schemas/decision-output.schema.json",
-      "description": "Verify a Companies House company identity and legal state. A 402 is a quote boundary, not permission to pay."
-    },
-    {
-      "name": "runonproof_approve_uk_supplier",
-      "kind": "api",
-      "method": "POST",
-      "path": "/v1/gb/solutions/supplier-approval",
-      "product_id": "gb.solution.supplier_approval.v1",
-      "price_usdc": "0.20",
-      "economic": true,
-      "input_schema": "schemas/tool-input.schema.json#/$defs/supplierApproval",
-      "output_schema": "schemas/decision-output.schema.json",
-      "description": "Verify a UK supplier using Companies House and UK sanctions evidence. Never widen a no-match beyond declared coverage."
-    },
-    {
-      "name": "runonproof_screen_uk_restricted_party",
-      "kind": "api",
-      "method": "POST",
-      "path": "/v1/restricted-parties/screen",
-      "product_id": "restricted_business_party.screen.v1",
-      "price_usdc": null,
-      "economic": false,
-      "input_schema": "schemas/tool-input.schema.json#/$defs/restrictedParty",
-      "output_schema": "schemas/decision-output.schema.json",
-      "description": "Screen a named party against the UK Sanctions List. No match is list- and time-scoped only."
-    },
-    {
-      "name": "runonproof_replay_uk_execution",
-      "kind": "api",
-      "method": "GET",
-      "path": "/v1/gb/executions/{{execution_id}}",
-      "price_usdc": "0.00",
-      "economic": false,
-      "input_schema": "schemas/tool-input.schema.json#/$defs/replay",
-      "output_schema": "schemas/decision-output.schema.json",
-      "description": "Replay a committed UK execution with zero live-source calls and zero additional charge."
-    },
-    {
-      "name": "runonproof_normalize_decision",
-      "kind": "javascript",
-      "implementation": "runtime.mjs#normalizeDecision",
-      "output_schema": "schemas/decision-output.schema.json",
-      "description": "Map the canonical envelope to PROCEED, REVIEW or STOP without hiding evidence, freshness, limitations or economic state."
-    }
+  "capabilities": [
+    { "name": "RunOnProof Company Check", "product_id_gb": "gb.solution.company_check.v1", "product_id_br": "br.solution.company_check.v1", "price_usdc": "0.04", "marketplace_status": "pending_unpublished" },
+    { "name": "RunOnProof Supplier Approval", "product_id_gb": "gb.solution.supplier_approval.v1", "product_id_br": "br.solution.supplier_approval.v1", "price_usdc": "0.20", "marketplace_status": "pending_unpublished" },
+    { "name": "RunOnProof Invoice & Payee Verification", "product_id_gb": "gb.solution.invoice_payee_verification.v1", "product_id_br": "br.solution.invoice_payee_verification.v1", "price_usdc": "0.09", "marketplace_status": "pending_unpublished" },
+    { "name": "RunOnProof Payment Authorization", "product_id_gb": "gb.solution.payment_authorization.v1", "product_id_br": "br.solution.payment_authorization.v1", "price_usdc": "0.25", "marketplace_status": "pending_unpublished", "payment_execution": false },
+    { "name": "RunOnProof Vendor Change & Continuous Authorization", "product_id_gb": "gb.solution.vendor_change_continuous_authorization.v1", "product_id_br": "br.solution.vendor_change_continuous_authorization.v1", "price_usdc": "0.20", "marketplace_status": "pending_unpublished" }
   ]
 }

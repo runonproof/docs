@@ -20,7 +20,7 @@ npm run demo:relevance-ai
 ## Documentation structure
 
 - Start, countries, capabilities, integrations, reference, and operations appear in the left navigation.
-- Relevance AI has dedicated pages for installation, Tool creation, agent connection, everyday use, decisions, pricing, security, fixtures, troubleshooting, production, maintenance, rollback, public/technical cases, and Marketplace preparation.
+- Relevance AI has dedicated pages for installation, Tool creation, agent connection, everyday use, decisions, pricing, the first purchase, security, fixtures, troubleshooting, production, maintenance, rollback, public/technical cases, and Marketplace review.
 - Long pages receive an “On this page” table of contents.
 - Mobile users receive an accessible documentation drawer.
 - `integrations/relevance-ai/` contains the sanitized public authoring manifest, schemas, deterministic normalization reference, agent prompt, and seven synthetic fixtures.
@@ -31,6 +31,6 @@ Every public release should record its approved public-contract export version a
 
 ## Publication state
 
-The source is public in this repository. Publication at `docs.runonproof.com` is a separate controlled deployment and must not be inferred from the existence of this repository. Relevance AI Marketplace submission is also a separate, currently unauthorized step.
+The source is public in this repository. Publication at `docs.runonproof.com` is a separate controlled deployment and must not be inferred from the existence of this repository. Six Relevance AI Tool submissions are under review and unpublished; five are target capabilities and Company Capability Passport is excluded from the intended public slice.
 
-The committed hosting manifest deliberately contains no project identifier. An authorized release operator must bind the repository to the intended Site through the controlled hosting lifecycle before deployment; never copy an internal hosting ID into public Git history.
+The hosting manifest is bound to the public RunOnProof Documentation Site. Deployment remains a controlled release step and must use the exact validated source SHA.

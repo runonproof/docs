@@ -1,6 +1,6 @@
 # RunOnProof for Relevance AI — documentation index
 
-This directory is the public maintenance source for the RunOnProof Relevance AI integration. It explains how to reproduce a safe development configuration, use it, interpret its output, maintain it, and prepare a truthful public case.
+This directory is the canonical maintenance source for the RunOnProof Relevance AI product. It explains public installation, the five-capability production slice, the human-approved x402 boundary, result interpretation, maintenance and removal.
 
 The executable contracts remain one directory above this documentation:
 
@@ -22,6 +22,7 @@ If you have never used Relevance AI, follow these pages in order:
 5. [Use the agent day to day](EVERYDAY-USE.md)
 6. [Understand decisions and evidence](DECISIONS-AND-RESULTS.md)
 7. [Understand price, HTTP 402 and approval](PRICING-402-AND-APPROVAL.md)
+8. [Prepare the first production purchase](FIRST-PURCHASE.md)
 
 For operators and developers:
 
@@ -30,6 +31,7 @@ For operators and developers:
 - [Production checklist](PRODUCTION-CHECKLIST.md)
 - [Update guide](UPDATE-GUIDE.md)
 - [Rollback and removal](ROLLBACK-AND-REMOVAL.md)
+- [Observed workspace evidence](WORKSPACE-EVIDENCE.md)
 - [Technical case](TECHNICAL-CASE.md)
 
 For communication and future distribution:
@@ -40,25 +42,13 @@ For communication and future distribution:
 - [Public repository architecture](PUBLIC-REPOSITORY-ARCHITECTURE.md)
 - [Marketplace submission guide](MARKETPLACE-SUBMISSION-GUIDE.md)
 
-## Public evidence state
+## Current state — 2026-08-11
 
-This repository proves the seven synthetic contract scenarios, including the `gb.solution.company_check.v1` quote boundary at `0.04 USDC`, with zero production calls and zero payment attempts. It does not publish private workspace evidence or claim a Relevance AI Marketplace listing, endorsement, certification, or partnership.
+The RunOnProof account has verified Relevance Builder access. Six Tool listings were submitted to the Relevance AI Marketplace and are all `pending` and `Unpublished`. Five belong to the initial commercial slice: Company Check, Supplier Approval, Invoice & Payee Verification, Payment Authorization, and Vendor Change & Continuous Authorization. Company Capability Passport is the sixth pending submission and must be withdrawn from Marketplace review while its private Tool remains protected.
 
-## The five private solutions
+No public Marketplace URL exists yet, so external discovery, cloning, purchase and use cannot be claimed. The internal agent remains a workspace-only demo and is not a substitute for Marketplace publication. Current verdict: `RELEVANCE_PUBLICATION_REVIEW_PENDING`.
 
-The RunOnProof private Relevance AI project contains five solution-level Tools. They are internal building blocks for a human-approved workflow, not public Marketplace products.
-
-| Solution | What it answers | Public contract |
-|---|---|---|
-| **UK Company Verification** | Is this the declared Companies House company, and what is its current legal state? | `POST /v1/gb/solutions/company-check` |
-| **UK Supplier Approval** | May this supplier enter the onboarding workflow, using scoped Companies House and UK Sanctions List evidence? | `POST /v1/gb/solutions/supplier-approval` |
-| **UK Invoice & Payee Verification** | Are the caller-provided invoice fields consistent with the company and independently supported payee evidence? | `POST /v1/gb/solutions/invoice-payee-verification` |
-| **UK Payment Authorization** | May one bounded business payment proceed under the available evidence and policy? This is a decision only; it never executes, signs, transmits, or settles payment. | `POST /v1/gb/solutions/payment-authorization` |
-| **UK Vendor Change & Continuous Authorization** | May a scoped vendor payee-detail change proceed, and may authorization continue under a fresh challenge and prior authorization? Continuation is bounded, never permanent. | `POST /v1/gb/solutions/vendor-change-continuous-authorization` |
-
-Every Tool is private, internally Live, connected to the private demo agent, and configured with `Requires approval`. `Publicly available` is off, automatic payment is off, and HTTP 402 always means `REVIEW` pending separate external authorization. No Tool has been submitted to the Marketplace or run as part of this documentation release.
-
-`UK Supplier Approval` remains the primary commercial demonstration. The other solutions show the width of the private portfolio without claiming that the whole United Kingdom programme is complete.
+Production truth is release `4a545d4fa39fd55400862c5efd096630293ced9c`, MCP Registry identity `io.github.runonproof/cdo@3.0.0`, and remote MCP `https://cdo-production.up.railway.app/v1/agent/mcp`. Relevance AI supports connecting that remote MCP, but the MCP Registry does not install it automatically.
 
 ## Sources of truth and precedence
 
@@ -76,7 +66,9 @@ Never infer availability from the presence of a route or an old screenshot. A ca
 
 - **Repository implemented**: code, schemas, fixtures, prompt, and documentation exist in Git.
 - **Published internally**: the Tool or agent is usable inside the RunOnProof Relevance AI project.
-- **Production call**: the Tool sends a request to `api.runonproof.com`.
-- **Marketplace published**: a separate public distribution state that has not been reached.
+- **Production call**: the Tool sends a request to `cdo-production.up.railway.app`.
+- **Marketplace submitted**: listing material has entered Relevance review; it is still unavailable to external users.
+- **Marketplace published**: the approved listing has a public URL and can be independently found and cloned. This state has not been reached.
+- **Payment certified**: one human-approved `0.04 USDC` production purchase, delivery, ledger reconciliation and no-charge replay were externally proven. This state has not been reached.
 
 Do not collapse these into one word such as “live.”
