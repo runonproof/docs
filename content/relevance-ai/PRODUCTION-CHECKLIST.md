@@ -1,6 +1,6 @@
 # Production checklist
 
-This checklist controls the move from a private synthetic demo to a real production-capable workflow. Completing repository installation does not itself authorize a production call or payment.
+This checklist controls the move from pending Marketplace review to a real public production workflow. Completing repository installation or submission does not itself authorize a production call or payment.
 
 ## Contract and catalog
 
@@ -9,6 +9,8 @@ This checklist controls the move from a private synthetic demo to a real product
 - [ ] Product ID, route, price, and purchasability match canonical runtime/catalog truth.
 - [ ] Capability matrix declares conditioned and unsupported capabilities accurately.
 - [ ] Public claims do not exceed current coverage.
+- [ ] Production SHA is `4a545d4fa39fd55400862c5efd096630293ced9c` or a separately certified successor.
+- [ ] MCP Registry identity `io.github.runonproof/cdo@3.0.0` remains active.
 
 ## Tool configuration
 
@@ -19,7 +21,8 @@ This checklist controls the move from a private synthetic demo to a real product
 - [ ] Automatic retry for paid POST is off.
 - [ ] Response schema and size ceiling are enforced.
 - [ ] Tool execution says **Requires approval**.
-- [ ] No wallet, payment header, payer secret, or reusable payment proof exists.
+- [ ] No wallet, payer secret, or reusable payment proof exists in Relevance.
+- [ ] An optional payment-signature input is usable only after the exact human-approved external handoff.
 
 ## Agent configuration
 
@@ -41,6 +44,14 @@ This checklist controls the move from a private synthetic demo to a real product
 - [ ] Idempotency conflict becomes 409/stop.
 - [ ] Execution history shows no unintended production call or payment.
 
+## Public distribution
+
+- [ ] The five target listings are approved and public.
+- [ ] Company Capability Passport is not publicly listed.
+- [ ] A public URL is recorded for each approved listing or consolidated Agent.
+- [ ] An independent Relevance account/project can find and clone the product.
+- [ ] Inputs, listing-free status and per-call USDC price are understandable without owner assistance.
+
 ## Operational readiness
 
 - [ ] Runtime coverage and source health are checked.
@@ -52,7 +63,7 @@ This checklist controls the move from a private synthetic demo to a real product
 
 ## Economic authorization
 
-The current Relevance AI Tool is not an x402 payment client. If a future workflow introduces payment, require a separate review of wallet custody, exact approval semantics, budgets, settlement reconciliation, duplicate prevention, failure/no-charge behavior, and rollback. Do not interpret this checklist as authorization to add payment.
+The current Relevance AI Tool is not an x402 signer. Before one controlled purchase, require a separate review of the non-custodial wallet handoff, exact approval semantics, `0.04 USDC` cap, settlement reconciliation, duplicate prevention, failure/no-charge behavior and rollback. Do not interpret this checklist as approval of a specific quote.
 
 ## Release evidence
 

@@ -34,7 +34,7 @@ Add an **API** or **API Call** step and configure:
 | Field | Value |
 | --- | --- |
 | Method | `POST` |
-| URL | `https://api.runonproof.com/v1/gb/solutions/company-check` |
+| URL | `https://cdo-production.up.railway.app/v1/gb/solutions/company-check` |
 | Response format | JSON |
 | Throw error on 4xx/5xx | Off |
 | Automatic retry | Off |

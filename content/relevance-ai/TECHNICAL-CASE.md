@@ -8,21 +8,21 @@ An AI agent can call an API, but that does not mean it knows whether the source 
 
 RunOnProof is exposed through a Relevance AI API Tool step. The first Tool verifies a UK Companies House company number through the Company Check solution. Repository-owned selection and normalization rules turn the canonical response into `PROCEED`, `REVIEW`, or `STOP` while retaining evidence, coverage, freshness, limitations, and economic activity.
 
-The API Tool mechanism was selected because Relevance AI officially documents custom API steps. The production RunOnProof MCP available when the integration was designed used a legacy contract rather than the public remote Streamable HTTP server required by Relevance AI’s MCP Client. This decision must be reevaluated if the certified MCP surface changes.
+The Marketplace submissions use API Tool steps because they expose a narrow product with explicit inputs and prices. Relevance AI also supports the certified RunOnProof remote Streamable HTTP MCP at `https://cdo-production.up.railway.app/v1/agent/mcp`. Direct MCP connection is a supported secondary path, not proof of Marketplace approval and not an x402 wallet.
 
 ## Request contract
 
 The primary business inputs are the exact `company_number` and an `idempotency_key` for the exact request. The Tool performs:
 
 ```text
-POST https://api.runonproof.com/v1/gb/solutions/company-check
+POST https://cdo-production.up.railway.app/v1/gb/solutions/company-check
 ```
 
 It sends JSON headers, binds the idempotency key, accepts JSON, and leaves 4xx/5xx available to the normalization step. Automatic retry is disabled for the paid POST.
 
 ## Economic boundary
 
-The public contract export documents `gb.solution.company_check.v1` at `0.04 USDC`. An unpaid request can return HTTP 402. The Tool maps 402 to `REVIEW`, displays the product and price, and stops. It has no wallet or payment proof.
+The product is `gb.solution.company_check.v1`, documented at `0.04 USDC` for the observed case. An unpaid request can return HTTP 402. The Tool maps 402 to `REVIEW`, displays the product and price, and stops. It has no wallet or payment proof.
 
 ## Decision safety
 
@@ -41,13 +41,13 @@ npm run test:relevance-ai
 
 The synthetic demo has an economic delta of `0.00 USDC` and makes no network call.
 
-## Publicly reproducible result
+## Observed result
 
-The repository runs seven synthetic scenarios. The quote fixture shows the correct product and `0.04 USDC`, returns `REVIEW`, redacts payment material, and records zero production calls and payment attempts.
+On 2026-08-10, the Tool and demo agent existed in the private RunOnProof Relevance AI project and were connected. Execution required approval. A synthetic smoke showed the correct product and `0.04 USDC`, returned `REVIEW`, and stopped without a production verification, payment, settlement, or platform credit charge in that smoke.
 
 ## Limitations
 
-Repository CI evidence is synthetic and does not reveal or certify a private workspace installation. Runtime health and price must be read at execution time. Relevance AI UI and platform behavior can change independently of this repository.
+Six Tool submissions are pending and unpublished, so the installation is not Marketplace-public. Complete synthetic coverage is repository CI evidence; only a smaller safe smoke was observed in the workspace. Runtime health and price must be read at execution time. Relevance AI UI and platform behavior can change independently of this repository.
 
 ## Why it matters
 

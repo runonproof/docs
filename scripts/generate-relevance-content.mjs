@@ -11,6 +11,7 @@ const routes = {
   "integrations/relevance-ai/use": "EVERYDAY-USE.md",
   "integrations/relevance-ai/decisions": "DECISIONS-AND-RESULTS.md",
   "integrations/relevance-ai/pricing-and-approval": "PRICING-402-AND-APPROVAL.md",
+  "integrations/relevance-ai/first-purchase": "FIRST-PURCHASE.md",
   "integrations/relevance-ai/security": "SECURITY-AND-DATA.md",
   "integrations/relevance-ai/fixtures": "FIXTURES-AND-EXPECTED-RESULTS.md",
   "integrations/relevance-ai/troubleshooting": "TROUBLESHOOTING.md",

@@ -6,6 +6,8 @@ This page separates two costs that are easy to confuse: Relevance AI platform cr
 
 Relevance AI may count platform usage according to the account plan. Those credits belong to Relevance AI and are not a RunOnProof settlement. Check the workspace usage page for current platform rules.
 
+The Marketplace listing is currently configured as **Free**. This means there is no Relevance Marketplace purchase price to clone the Tool. It does not make RunOnProof production calls free.
+
 ## RunOnProof price
 
 RunOnProof paid products use a canonical USDC price. The initial UK Company Check is documented as:
@@ -29,11 +31,15 @@ The Relevance AI integration converts 402 to `REVIEW`, shows the product and can
 
 ## Why payment is not automatic
 
-The Tool intentionally contains no wallet, private key, payer key, `PAYMENT-SIGNATURE`, x402 proof, or reusable payment credential. A separate authorized x402-capable client or minimal gateway would be required to pay. That is outside this Tool’s current authority.
+The Tool intentionally contains no wallet, private key, payer key, x402 proof, or reusable payment credential. Relevance AI does not document a native user-wallet x402 signer. A separate non-custodial handoff must display and bind the exact quote, obtain human approval, ask the user's wallet to sign locally, and return only the short-lived `Payment-Signature` for that request.
 
 ## Human approval
 
-The Tool execution policy is **Requires approval**. Approval to execute the Tool is a workflow control; it is not automatically the same as authorization to transfer USDC. Before any future payment path, the user must see the product, exact price, requested action, and payment consequence.
+The Tool execution policy is **Approval Required**. Approval to make the unpaid quote request is a workflow control; it is not authorization to transfer USDC. A second explicit approval at the economic boundary must show product, country, exact `0.04 USDC` price, Base network, payee, request digest, idempotency key and expiry before the wallet signs.
+
+Required sequence:
+
+`request → quote → REVIEW → human approval → wallet signature → payment → execution → result`
 
 ## Idempotency and duplicate prevention
 
@@ -63,3 +69,5 @@ Before publishing an agent version internally, confirm:
 - platform usage and RunOnProof USDC are reported separately.
 
 If any of these checks fail, disable the Tool version before further testing.
+
+See [First production purchase](FIRST-PURCHASE.md) for the evidence required from one controlled Company Check.
