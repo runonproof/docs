@@ -91,6 +91,10 @@ test("publishes every channel and policy route as RunOnProof", async () => {
   assert.equal(llms.status, 200);
   assert.match(llms.headers.get("content-type") ?? "", /^text\/plain\b/i);
   assert.match(await llms.text(), /Remote MCP: https:\/\/api\.runonproof\.com\/v1\/agent\/mcp/);
+  const llmsText = await (await fetchPage("/llms.txt")).text();
+  assert.match(llmsText, /Exact total: 0\.79 USDC/);
+  assert.match(llmsText, /io\.github\.runonproof\/cdo@3\.1\.0/);
+  assert.match(llmsText, /Company Capability Passport is a free proof and reuse companion, not an economic product/);
 });
 
 test("publishes the UK V1 sitemap without removing existing documentation", async () => {
@@ -107,8 +111,65 @@ test("publishes the UK V1 sitemap without removing existing documentation", asyn
     "/docs/uk/products/resolve-legal-entity",
     "/docs/uk/solutions/payment-authorisation",
     "/docs/uk/passport/company-capability-passport",
+    "/docs/agent-first",
+    "/docs/agent-first/agent-id",
+    "/docs/agent-first/company-check",
+    "/docs/agent-first/vendor-change-continuous-authorization",
   ]) {
     assert.match(xml, new RegExp(`https://docs\\.runonproof\\.com${path}`));
+  }
+});
+
+test("proxies only the certified AMF1-8 allowlist and strips caller authority", async () => {
+  const originalFetch = globalThis.fetch;
+  const seen = [];
+  globalThis.fetch = async (input, init) => {
+    seen.push({ input: String(input), init });
+    const isJson = String(input).endsWith("agent-x402-resources.json");
+    return new Response(
+      isJson
+        ? JSON.stringify({ paid_operation_count: 6, total_price_atomic: "790000", passport_is_economic_product: false })
+        : '<!doctype html><link rel="canonical" href="https://docs.runonproof.com/docs/agent-first"><h1>Agent-first RunOnProof</h1>',
+      { status: 200, headers: { "content-type": isJson ? "application/json" : "text/html; charset=utf-8" } },
+    );
+  };
+  try {
+    const authorityHeaders = {
+      authorization: "Bearer must-not-forward",
+      cookie: "must-not-forward=1",
+      "payment-signature": "must-not-forward",
+      "x-payment": "must-not-forward",
+    };
+    const page = await worker.fetch(
+      new Request("http://localhost/docs/agent-first", { headers: authorityHeaders }),
+      { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
+      { waitUntil() {}, passThroughOnException() {} },
+    );
+    assert.equal(page.status, 200);
+    assert.equal(page.headers.get("x-runonproof-docs-source-sha"), "fabd5b9f1d288c92a0712ce7a6131c7f5e3974f2");
+    assert.equal(page.headers.get("x-runonproof-docs-route"), "amf1-8-certified-proxy");
+    assert.match(await page.text(), /Agent-first RunOnProof/);
+
+    const data = await worker.fetch(
+      new Request("http://localhost/docs/data/agent-x402-resources.json", { headers: authorityHeaders }),
+      { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
+      { waitUntil() {}, passThroughOnException() {} },
+    );
+    assert.deepEqual(await data.json(), {
+      paid_operation_count: 6,
+      total_price_atomic: "790000",
+      passport_is_economic_product: false,
+    });
+    assert.equal(seen.length, 2);
+    for (const call of seen) {
+      const forwarded = new Headers(call.init.headers);
+      assert.equal(forwarded.get("authorization"), null);
+      assert.equal(forwarded.get("cookie"), null);
+      assert.equal(forwarded.get("payment-signature"), null);
+      assert.equal(forwarded.get("x-payment"), null);
+    }
+  } finally {
+    globalThis.fetch = originalFetch;
   }
 });
 

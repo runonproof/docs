@@ -3,6 +3,11 @@ import { handleImageOptimization, DEFAULT_DEVICE_SIZES, DEFAULT_IMAGE_SIZES } fr
 import handler from "vinext/server/app-router-entry";
 import { allDocSlugs } from "../lib/docs";
 import {
+  AGENT_FIRST_CERTIFIED_API_SHA,
+  AGENT_FIRST_PUBLIC_PATHS,
+  isCertifiedAgentFirstPublicPath,
+} from "../lib/agent-first-public-routes";
+import {
   CERTIFIED_API_ORIGIN,
   CERTIFIED_API_SHA,
   isCertifiedUkPublicPath,
@@ -32,6 +37,7 @@ function sitemapResponse(): Response {
   const paths = new Set([
     ...allDocSlugs().map((slug) => slug ? `/docs/${slug}` : "/docs"),
     ...UK_V1_PUBLIC_PATHS,
+    ...AGENT_FIRST_PUBLIC_PATHS.filter((path) => path.startsWith("/docs/agent-first")),
     "/docs/reference/openapi",
   ]);
   const urls = [...paths].sort().map((path) =>
@@ -44,18 +50,23 @@ function sitemapResponse(): Response {
 }
 
 function robotsResponse(): Response {
-  return new Response(`User-agent: *\nAllow: /\nSitemap: ${PUBLIC_DOCS_ORIGIN}/sitemap.xml\n`, {
+  return new Response(`User-agent: *\nAllow: /\n# Agent map: ${CERTIFIED_API_ORIGIN}/.well-known/agent-map.json\nSitemap: ${PUBLIC_DOCS_ORIGIN}/sitemap.xml\n`, {
     headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=300" },
   });
 }
 
 function llmsResponse(): Response {
-  return new Response(`# RunOnProof\n\n> Evidence-backed, source-scoped business decisions for agents and enterprise systems.\n\n- Documentation: ${PUBLIC_DOCS_ORIGIN}/docs\n- UK V1: ${PUBLIC_DOCS_ORIGIN}/docs/uk/v1\n- Integrations: ${PUBLIC_DOCS_ORIGIN}/docs/integrations\n- MCP: ${PUBLIC_DOCS_ORIGIN}/docs/integrations/mcp\n- Support: ${PUBLIC_DOCS_ORIGIN}/docs/support\n- Privacy: ${PUBLIC_DOCS_ORIGIN}/docs/privacy\n- Terms: ${PUBLIC_DOCS_ORIGIN}/docs/terms\n- OpenAPI: ${CERTIFIED_API_ORIGIN}/v1/openapi.json\n- Catalog: ${CERTIFIED_API_ORIGIN}/v1/catalog\n- Agent Card: ${CERTIFIED_API_ORIGIN}/.well-known/agent-card.json\n- Remote MCP: ${CERTIFIED_API_ORIGIN}/v1/agent/mcp\n\nThe five UK commercial solutions are Company Check, Supplier Approval, Invoice & Payee Verification, Payment Authorization, and Vendor Change & Continuous Authorization. Paid Tools return a bound x402 endpoint and never sign, pay, or settle automatically. HTTP 402 requires review.\n`, {
+  return new Response(`# RunOnProof\n\n> Evidence-backed, source-scoped business authorization for autonomous agents and enterprise systems.\n\n- Documentation: ${PUBLIC_DOCS_ORIGIN}/docs\n- Agent-first guide: ${PUBLIC_DOCS_ORIGIN}/docs/agent-first\n- Complete intent taxonomy: ${CERTIFIED_API_ORIGIN}/.well-known/runonproof-intents.json\n- ARD AI catalog: ${CERTIFIED_API_ORIGIN}/.well-known/ai-catalog.json\n- Agent map: ${CERTIFIED_API_ORIGIN}/.well-known/agent-map.json\n- A2A Agent Card: ${CERTIFIED_API_ORIGIN}/.well-known/agent-card.json\n- MCP server card: ${CERTIFIED_API_ORIGIN}/.well-known/mcp/server-card.json\n- Remote MCP: ${CERTIFIED_API_ORIGIN}/v1/agent/mcp\n- OpenAPI: ${CERTIFIED_API_ORIGIN}/v1/openapi.json\n- Exact x402 resources: ${CERTIFIED_API_ORIGIN}/v1/agent-mode/x402-resources\n- Source health: ${CERTIFIED_API_ORIGIN}/v1/us/federal/source-health\n- UK V1: ${PUBLIC_DOCS_ORIGIN}/docs/uk/v1\n- Support: ${PUBLIC_DOCS_ORIGIN}/docs/support\n- Privacy: ${PUBLIC_DOCS_ORIGIN}/docs/privacy\n- Terms: ${PUBLIC_DOCS_ORIGIN}/docs/terms\n\nUS federal agent-first: five commercial solutions compile to six paid x402 operations at 0.04, 0.20, 0.10, 0.20, 0.15, and 0.10 USDC. Exact total: 0.79 USDC on Base. Agent ID is free. Company Capability Passport is a free proof and reuse companion, not an economic product. Coverage is FEDERAL_ONLY. Unsupported coverage, insufficient authority or budget, valid reusable evidence, and unhealthy mandatory sources produce explicit negative selection without charge.\n\nThe official MCP Registry identity is io.github.runonproof/cdo@3.1.0. Discovery and HTTP 402 never authorize automatic payment. The MCP server never signs, pays, settles, or retries on behalf of the caller.\n`, {
     headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=300" },
   });
 }
 
-async function certifiedUkResponse(request: Request, pathname: string): Promise<Response> {
+async function certifiedRuntimeResponse(
+  request: Request,
+  pathname: string,
+  sourceSha: string,
+  routeLabel: string,
+): Promise<Response> {
   if (request.method !== "GET" && request.method !== "HEAD") {
     return new Response("Method Not Allowed", { status: 405, headers: { allow: "GET, HEAD" } });
   }
@@ -86,8 +97,8 @@ async function certifiedUkResponse(request: Request, pathname: string): Promise<
     if (value) responseHeaders.set(name, value);
   }
   responseHeaders.set("cache-control", "no-store, max-age=0");
-  responseHeaders.set("x-runonproof-docs-source-sha", CERTIFIED_API_SHA);
-  responseHeaders.set("x-runonproof-docs-route", "uk-v1-certified-proxy");
+  responseHeaders.set("x-runonproof-docs-source-sha", sourceSha);
+  responseHeaders.set("x-runonproof-docs-route", routeLabel);
 
   if (request.method === "HEAD") return new Response(null, { status: upstream.status, headers: responseHeaders });
   const contentType = upstream.headers.get("content-type") ?? "";
@@ -111,7 +122,12 @@ const worker = {
     if (url.pathname === "/sitemap.xml") return sitemapResponse();
     if (url.pathname === "/robots.txt") return robotsResponse();
     if (url.pathname === "/llms.txt") return llmsResponse();
-    if (isCertifiedUkPublicPath(url.pathname)) return certifiedUkResponse(request, url.pathname);
+    if (isCertifiedAgentFirstPublicPath(url.pathname)) {
+      return certifiedRuntimeResponse(request, url.pathname, AGENT_FIRST_CERTIFIED_API_SHA, "amf1-8-certified-proxy");
+    }
+    if (isCertifiedUkPublicPath(url.pathname)) {
+      return certifiedRuntimeResponse(request, url.pathname, CERTIFIED_API_SHA, "uk-v1-certified-proxy");
+    }
 
     if (url.pathname === "/_vinext/image") {
       const allowedWidths = [...DEFAULT_DEVICE_SIZES, ...DEFAULT_IMAGE_SIZES];
